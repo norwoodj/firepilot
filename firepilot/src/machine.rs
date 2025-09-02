@@ -54,6 +54,12 @@ pub struct Machine {
     executor: Executor,
 }
 
+impl Default for Machine {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Machine {
     pub fn new() -> Self {
         Machine {
@@ -135,6 +141,11 @@ impl Machine {
         self.executor.configure_network(config.interfaces).await?;
         if let Some(vsock) = config.vsock {
             self.executor.configure_vsock(vsock).await?;
+        }
+        if let Some(machine_configuration) = config.machine_configuration {
+            self.executor
+                .configure_machine(machine_configuration)
+                .await?;
         }
 
         Ok(())

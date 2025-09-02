@@ -11,6 +11,12 @@ pub struct DriveBuilder {
     pub is_read_only: bool,
 }
 
+impl Default for DriveBuilder {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl DriveBuilder {
     pub fn new() -> DriveBuilder {
         DriveBuilder {
@@ -77,7 +83,7 @@ mod tests {
             .as_root_device()
             .as_read_only()
             .try_build();
-        assert_eq!(drive.is_ok(), true);
+        assert!(drive.is_ok());
     }
 
     #[test]
@@ -85,7 +91,7 @@ mod tests {
         let drive = crate::builder::drive::DriveBuilder::new()
             .with_drive_id("rootfs".to_string())
             .try_build();
-        assert_eq!(drive.is_err(), true);
+        assert!(drive.is_err());
         assert_eq!(
             drive.err().unwrap(),
             BuilderError::MissingRequiredField(stringify!(self.path_on_host).to_string())
@@ -97,7 +103,7 @@ mod tests {
         let drive = crate::builder::drive::DriveBuilder::new()
             .with_path_on_host("/path/to/rootfs".into())
             .try_build();
-        assert_eq!(drive.is_err(), true);
+        assert!(drive.is_err());
         assert_eq!(
             drive.err().unwrap(),
             BuilderError::MissingRequiredField(stringify!(self.drive_id).to_string())

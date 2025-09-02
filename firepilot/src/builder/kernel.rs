@@ -10,6 +10,12 @@ pub struct KernelBuilder {
     pub kernel_image_path: Option<String>,
 }
 
+impl Default for KernelBuilder {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl KernelBuilder {
     pub fn new() -> KernelBuilder {
         KernelBuilder {

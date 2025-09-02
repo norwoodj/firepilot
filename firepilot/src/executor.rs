@@ -27,7 +27,7 @@ use tracing::{debug, error, info, instrument, trace};
 
 use crate::machine::FirepilotError;
 use firepilot_models::models::vm::Vm;
-use firepilot_models::models::{BootSource, Drive, NetworkInterface, Vsock};
+use firepilot_models::models::{BootSource, Drive, MachineConfiguration, NetworkInterface, Vsock};
 
 /// Interface to determine how to execute commands on the socket and where to do it
 pub trait Execute {
@@ -330,6 +330,23 @@ impl Executor {
         let json = serde_json::to_string(&vsock).map_err(ExecuteError::Serialize)?;
 
         let path = "/vsock";
+        let url: hyper::Uri = Uri::new(self.chroot().join("firecracker.socket"), path).into();
+        self.send_request(url, Method::PUT, json).await?;
+
+        Ok(())
+    }
+
+    /// Apply machine configuration on the VM
+    #[instrument(skip_all, fields(id = %self.id))]
+    pub async fn configure_machine(
+        &self,
+        machine_configuration: MachineConfiguration,
+    ) -> Result<(), ExecuteError> {
+        debug!("Configure machine config");
+        let json =
+            serde_json::to_string(&machine_configuration).map_err(ExecuteError::Serialize)?;
+
+        let path = "/machine-config";
         let url: hyper::Uri = Uri::new(self.chroot().join("firecracker.socket"), path).into();
         self.send_request(url, Method::PUT, json).await?;
 

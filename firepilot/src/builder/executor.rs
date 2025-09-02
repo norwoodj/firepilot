@@ -16,6 +16,12 @@ pub struct FirecrackerExecutorBuilder {
     exec_binary: Option<PathBuf>,
 }
 
+impl Default for FirecrackerExecutorBuilder {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl FirecrackerExecutorBuilder {
     pub fn new() -> FirecrackerExecutorBuilder {
         FirecrackerExecutorBuilder {
@@ -79,7 +85,7 @@ impl FirecrackerExecutorBuilder {
         Self::find_binary_from_env_location()
             .or_else(Self::find_binary_from_path)
             .or_else(Self::find_binary_from_current_directory)
-            .map(|p| Ok(p))
+            .map(Ok)
             .unwrap_or(Err(BuilderError::BinaryNotFound("Check if FIRECRACKER_LOCATION environment variable is correctly set. For more information check https://docs.rs/firepilot/ ".to_string())))
     }
 

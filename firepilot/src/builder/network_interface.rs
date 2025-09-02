@@ -11,6 +11,12 @@ pub struct NetworkInterfaceBuilder {
     tx_rate_limiter: Option<Box<RateLimiter>>,
 }
 
+impl Default for NetworkInterfaceBuilder {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl NetworkInterfaceBuilder {
     pub fn new() -> NetworkInterfaceBuilder {
         NetworkInterfaceBuilder {

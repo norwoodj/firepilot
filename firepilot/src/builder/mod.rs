@@ -51,11 +51,12 @@
 //! ```
 use crate::executor::Executor;
 
-use firepilot_models::models::{BootSource, Drive, NetworkInterface, Vsock};
+use firepilot_models::models::{BootSource, Drive, MachineConfiguration, NetworkInterface, Vsock};
 
 pub mod drive;
 pub mod executor;
 pub mod kernel;
+pub mod machine;
 pub mod network_interface;
 pub mod vsock;
 
@@ -104,6 +105,7 @@ pub struct Configuration {
     pub storage: Vec<Drive>,
     pub interfaces: Vec<NetworkInterface>,
     pub vsock: Option<Vsock>,
+    pub machine_configuration: Option<MachineConfiguration>,
 
     pub vm_id: String,
 }
@@ -116,6 +118,7 @@ impl Configuration {
             storage: Vec::new(),
             interfaces: Vec::new(),
             vsock: None,
+            machine_configuration: None,
             vm_id,
         }
     }
@@ -143,6 +146,14 @@ impl Configuration {
 
     pub fn with_vsock(mut self, vsock: Vsock) -> Configuration {
         self.vsock = Some(vsock);
+        self
+    }
+
+    pub fn with_machine_configuration(
+        mut self,
+        machine_configuration: MachineConfiguration,
+    ) -> Configuration {
+        self.machine_configuration = Some(machine_configuration);
         self
     }
 }
